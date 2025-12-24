@@ -1,2 +1,0 @@
-# ErrCode
-my test bb 
