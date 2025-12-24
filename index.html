@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Error Code Lookup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.png">
+
+  <!-- Librairie XLSX -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #2196f3;
+    }
+    .form-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+    input[type="file"], input[type="text"] {
+      flex: 1 1 60%;
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+    }
+    button {
+      flex: 1 1 30%;
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1976d2;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #f9f9f9;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h2>Recherche Code Erreur</h2>
+
+  <!-- Sélection du fichier Excel -->
+  <div class="form-group">
+    <input type="file" id="fileInput" />
+    <button onclick="loadExcel()">Charger Excel</button>
+  </div>
+
+  <!-- Champ pour entrer le code -->
+  <div class="form-group">
+    <input id="codeInput" type="text" placeholder="Entrez le code">
+    <button onclick="searchError()">Chercher</button>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    let errorData = {};
+
+    // Charger le fichier Excel choisi par l'utilisateur
+    function loadExcel() {
+      const file = document.getElementById("fileInput").files[0];
+      if (!file) {
+        alert("Veuillez sélectionner un fichier Excel.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0]; // première feuille
+        const sheet = workbook.Sheets[sheetName];
+        const rows = XLSX.utils.sheet_to_json(sheet);
+
+        // Construire la base de données
+        errorData = {}; // reset
+        rows.forEach(row => {
+          errorData[row.ErrorCode] = {
+            Name: row.Name,
+            ShortDescription: row.ShortDescription,
+            Description: row.Description
+          };
+        });
+
+        alert("✅ Données Excel chargées !");
+        console.log("Données chargées:", errorData);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Chercher un code
+    function searchError() {
+      const code = document.getElementById("codeInput").value.trim();
+      const data = errorData[code];
+      const resultDiv = document.getElementById("result");
+
+      if (data) {
+        resultDiv.innerHTML = `
+          <strong>Name:</strong> ${data.Name}<br>
+          <strong>Short Description:</strong> ${data.ShortDescription}<br>
+          <strong>Description:</strong><br>${data.Description.replace(/\n/g,"<br>")}
+        `;
+      } else {
+        resultDiv.innerHTML = "❌ Aucun détail trouvé pour ce code.";
+      }
+    }
+
+    // Enregistrer le service worker
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js")
+        .then(() => console.log("Service Worker enregistré"))
+        .catch(err => console.error("Erreur SW:", err));
+    }
+  </script>
+</body>
+</html>
