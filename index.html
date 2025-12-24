@@ -30,7 +30,7 @@
       justify-content: center;
       margin-bottom: 15px;
     }
-    input[type="file"], input[type="text"] {
+    input[type="text"] {
       flex: 1 1 60%;
       padding: 10px;
       margin: 5px;
@@ -63,12 +63,6 @@
 <body>
   <h2>Recherche Code Erreur</h2>
 
-  <!-- Sélection du fichier Excel -->
-  <div class="form-group">
-    <input type="file" id="fileInput" />
-    <button onclick="loadExcel()">Charger Excel</button>
-  </div>
-
   <!-- Champ pour entrer le code -->
   <div class="form-group">
     <input id="codeInput" type="text" placeholder="Entrez le code">
@@ -80,24 +74,17 @@
   <script>
     let errorData = {};
 
-    // Charger le fichier Excel choisi par l'utilisateur
-    function loadExcel() {
-      const file = document.getElementById("fileInput").files[0];
-      if (!file) {
-        alert("Veuillez sélectionner un fichier Excel.");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0]; // première feuille
+    // Charger automatiquement l'Excel depuis le repo
+    async function loadExcelAuto() {
+      try {
+        const response = await fetch("ErrorCodesCR10-12-15.xlsx");
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const rows = XLSX.utils.sheet_to_json(sheet);
 
-        // Construire la base de données
-        errorData = {}; // reset
+        errorData = {};
         rows.forEach(row => {
           errorData[row.ErrorCode] = {
             Name: row.Name,
@@ -106,10 +93,11 @@
           };
         });
 
-        alert("✅ Données Excel chargées !");
-        console.log("Données chargées:", errorData);
-      };
-      reader.readAsArrayBuffer(file);
+        console.log("✅ Données Excel chargées automatiquement :", errorData);
+      } catch (err) {
+        console.error("Erreur lors du chargement Excel:", err);
+        alert("❌ Impossible de charger le fichier Excel automatiquement.");
+      }
     }
 
     // Chercher un code
@@ -128,6 +116,9 @@
         resultDiv.innerHTML = "❌ Aucun détail trouvé pour ce code.";
       }
     }
+
+    // Charger automatiquement à l'ouverture
+    loadExcelAuto();
 
     // Enregistrer le service worker
     if ("serviceWorker" in navigator) {
