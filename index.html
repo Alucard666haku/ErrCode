@@ -201,7 +201,12 @@
   // Chercher un code
   function searchError() {
     const code = document.getElementById("codeInput").value.trim();
-    const data = errorData[code];
+    if (currentOption === "CR85") {
+      const data = errorData["'" + code];
+    } else {
+      const data = errorData[code];
+    }
+    
     const resultDiv = document.getElementById("result");
 
     if (data) {
