@@ -93,61 +93,102 @@
 
   <div id="result"></div>
 
-  <script>
-    let errorData = {};
+<script>
+  let errorData = {};
+  let currentOption = "CR10"; // valeur par défaut
 
-    // Charger automatiquement l'Excel depuis le repo
-    async function loadExcelAuto() {
-      try {
-        const response = await fetch("ErrorCodesCR10-12-15.xlsx");
-        const arrayBuffer = await response.arrayBuffer();
-        const workbook = XLSX.read(arrayBuffer, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const rows = XLSX.utils.sheet_to_json(sheet);
+  // Charger Excel selon l'option choisie
+  async function loadExcel(option) {
+    currentOption = option;
+    let fileName = "";
+    try {
+      // Choisir le fichier selon le bouton radio
+      switch(option) {
+        case "CR10":
+          fileName = "ErrorCodesCR10-12-15.xlsx";
+          break;
+        case "CR35":
+          fileName = "ErrorCodesCR25-35.xlsx";
+          break;
+        case "CR85":
+          fileName = "ErrorCodesCR75-85.xlsx";
+          break;
+        case "DXG":
+          fileName = "ErrorCodesDXG-DXM.xlsx";
+          break;
+        case "CR301":
+          fileName = "ErrorCodesCR30-1Gen.xlsx";
+          break;
+        case "CR302":
+          fileName = "ErrorCodesCR30-2Gen.xlsx";
+          break;
+      }
 
-        errorData = {};
-        rows.forEach(row => {
+      const response = await fetch(fileName);
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet);
+
+      errorData = {};
+      rows.forEach(row => {
+        // Adapter selon le format du fichier
+        if (option === "CR10") {
           errorData[row.ErrorCode] = {
             Name: row.Name,
             ShortDescription: row.ShortDescription,
             Description: row.Description
           };
-        });
+        } else {
+          errorData[row.ErrorCode] = {
+            Identifier: row.Identifier,
+            Priority: row.Priority,
+            TextToDisplay: row.TextToDisplay,
+            ConfirmRequired: row.ConfirmRequired,
+            Description: row.Description,
+            ExtendedDescription: row.ExtendedDescription
+          };
+        }
+      });
 
-        console.log("✅ Données Excel chargées automatiquement :", errorData);
-      } catch (err) {
-        console.error("Erreur lors du chargement Excel:", err);
-        alert("❌ Impossible de charger le fichier Excel automatiquement.");
-      }
+      console.log("✅ Données Excel chargées pour", option, errorData);
+    } catch (err) {
+      console.error("Erreur lors du chargement Excel:", err);
+      alert("❌ Impossible de charger le fichier Excel pour " + option);
     }
+  }
 
-    // Chercher un code
-    function searchError() {
-      const code = document.getElementById("codeInput").value.trim();
-      const data = errorData[code];
-      const resultDiv = document.getElementById("result");
+  // Chercher un code
+  function searchError() {
+    const code = document.getElementById("codeInput").value.trim();
+    const data = errorData[code];
+    const resultDiv = document.getElementById("result");
 
-      if (data) {
+    if (data) {
+      // Affichage selon le type de fichier
+      if (currentOption === "CR10") {
         resultDiv.innerHTML = `
           <strong>Name:</strong> ${data.Name}<br>
           <strong>Short Description:</strong> ${data.ShortDescription}<br>
           <strong>Description:</strong><br>${data.Description.replace(/\n/g,"<br>")}
         `;
       } else {
-        resultDiv.innerHTML = "❌ Aucun détail trouvé pour ce code.";
+        resultDiv.innerHTML = `
+          <strong>Identifier:</strong> ${data.Identifier}<br>
+          <strong>Priority:</strong> ${data.Priority}<br>
+          <strong>Text To Display:</strong> ${data.TextToDisplay}<br>
+          <strong>Confirm Required:</strong> ${data.ConfirmRequired}<br>
+          <strong>Description:</strong><br>${data.Description.replace(/\n/g,"<br>")}<br>
+          <strong>Extended Description:</strong><br>${data.ExtendedDescription.replace(/\n/g,"<br>")}
+        `;
       }
+    } else {
+      resultDiv.innerHTML = "❌ Aucun détail trouvé pour ce code.";
     }
+  }
 
-    // Charger automatiquement à l'ouverture
-    loadExcelAuto();
-
-    // Enregistrer le service worker
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js")
-        .then(() => console.log("Service Worker enregistré"))
-        .catch(err => console.error("Erreur SW:", err));
-    }
-  </script>
+  // Charger par défaut CR10 au démarrage
+  loadExcel("CR10");
+</script>
 </body>
 </html>
