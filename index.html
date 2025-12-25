@@ -125,10 +125,29 @@
       }
 
       const response = await fetch(fileName);
-      const arrayBuffer = await response.arrayBuffer();
-      const workbook = XLSX.read(arrayBuffer, { type: "array" });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(sheet);
+
+      // Détection de l'extension
+      const isCsv = fileName.toLowerCase().endsWith(".csv");
+
+      let rows;
+
+      if (isCsv) {
+        // Lecture CSV
+        const text = await response.text();
+        // SheetJS sait lire du CSV directement
+        const workbook = XLSX.read(text, { type: "string" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        rows = XLSX.utils.sheet_to_json(sheet, { defval: "" }); // defval = "" pour éviter undefined
+      } else {
+        // Lecture XLSX
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+      }
+
+
+
 
       errorData = {};
       rows.forEach(row => {
@@ -161,7 +180,14 @@
             ServCode: row.ServCode,
             ServiceMessage: row.ServiceMessage
           };
-        } 
+        } else if (option === "CR85") {
+          errorData[row.ErrorCode] = {
+            Identifier: row.Identifier,
+            Meaning: row.Meaning,
+            Reason: row.Reason,
+            Cure: row.Cure
+          };
+        }
         
       });
 
@@ -207,6 +233,13 @@
           <strong>ServID:</strong> ${data.ServID ? data.ServID : ""}<br>
           <strong>ServCode:</strong> ${data.ServCode ? data.ServCode : ""}<br>
           <strong>Service Message:</strong><br>${data.ServiceMessage ? data.ServiceMessage.replace(/\n/g,"<br>") : ""}
+        `;
+      } else if (currentOption === "CR85") {
+        resultDiv.innerHTML = `
+          <strong>Identifier:</strong> ${data.Identifier ? data.Identifier : ""}<br>
+          <strong>Meaning:</strong> ${data.Meaning ? data.Meaning : ""}<br>
+          <strong>Reason:</strong><br>${data.Reason ? data.Reason.replace(/\n/g,"<br>") : ""}<br>
+          <strong>Cure:</strong><br>${data.Cure ? data.Cure.replace(/\n/g,"<br>") : ""}
         `;
       }
     } else {
