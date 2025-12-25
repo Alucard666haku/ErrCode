@@ -182,30 +182,30 @@
       // Affichage selon le type de fichier
       if (currentOption === "CR10") {
         resultDiv.innerHTML = `
-          <strong>Name:</strong> ${data.Name}<br>
-          <strong>Short Description:</strong> ${data.ShortDescription}<br>
+          <strong>Name:</strong> ${data.Name ? data.Name : ""}<br>
+          <strong>Short Description:</strong> ${data.ShortDescription ? data.ShortDescription : ""}<br>
           <strong>Description:</strong><br>${data.Description ? data.Description.replace(/\n/g,"<br>") : ""}
         `;
       } else if (currentOption === "CR301" ) {
         resultDiv.innerHTML = `
-          <strong>Identifier:</strong> ${data.Identifier}<br>
-          <strong>Priority:</strong> ${data.Priority}<br>
-          <strong>Text To Display:</strong> ${data.TextToDisplay}<br>
-          <strong>Confirm Required:</strong> ${data.ConfirmRequired}<br>
+          <strong>Identifier:</strong> ${data.Identifier ? data.Identifier : ""}<br>
+          <strong>Priority:</strong> ${data.Priority ? data.Priority : ""}<br>
+          <strong>Text To Display:</strong> ${data.TextToDisplay ? data.TextToDisplay : ""}<br>
+          <strong>Confirm Required:</strong> ${data.ConfirmRequired ? data.ConfirmRequired : ""}<br>
           <strong>Description:</strong><br>${data.Description ? data.Description.replace(/\n/g,"<br>") : ""}<br>
           <strong>Extended Description:</strong><br>${data.ExtendedDescription ? data.ExtendedDescription.replace(/\n/g,"<br>") : ""}
         `;
       } else if (currentOption === "CR302" ) {
         resultDiv.innerHTML = `
-          <strong>Identifier:</strong> ${data.Identifier}<br>
-          <strong>Priority:</strong> ${data.Priority}<br>
-          <strong>Id Of Text To Display:</strong> ${data.IdOfTextToDisplay}<br>
-          <strong>Text To Display:</strong> ${data.TextToDisplay}<br>
-          <strong>Confirm Required:</strong> ${data.ConfirmRequired}<br>
+          <strong>Identifier:</strong> ${data.Identifier ? data.Identifier : ""}<br>
+          <strong>Priority:</strong> ${data.Priority ? data.Priority : ""}<br>
+          <strong>Id Of Text To Display:</strong> ${data.IdOfTextToDisplay ? data.IdOfTextToDisplay : ""}<br>
+          <strong>Text To Display:</strong> ${data.TextToDisplay ? data.TextToDisplay : ""}<br>
+          <strong>Confirm Required:</strong> ${data.ConfirmRequired ? data.ConfirmRequired : ""}<br>
           <strong>Description:</strong><br>${data.Description ? data.Description.replace(/\n/g,"<br>") : ""}<br>
           <strong>Extended Description:</strong><br>${data.ExtendedDescription ? data.ExtendedDescription.replace(/\n/g,"<br>") : ""}<br>
-          <strong>ServID:</strong> ${data.ServID}<br>
-          <strong>ServCode:</strong> ${data.ServCode}<br>
+          <strong>ServID:</strong> ${data.ServID ? data.ServID : ""}<br>
+          <strong>ServCode:</strong> ${data.ServCode ? data.ServCode : ""}<br>
           <strong>Service Message:</strong><br>${data.ServiceMessage ? data.ServiceMessage.replace(/\n/g,"<br>") : ""}
         `;
       }
