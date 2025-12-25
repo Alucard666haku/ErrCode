@@ -146,9 +146,6 @@
         rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
       }
 
-
-
-
       errorData = {};
       rows.forEach(row => {
         // Adapter selon le format du fichier
@@ -180,7 +177,7 @@
             ServCode: row.ServCode,
             ServiceMessage: row.ServiceMessage
           };
-        } else if (option === "CR85") {
+        } else if (option === "CR85" || option === "CR35") {
           errorData[row.ErrorCode] = {
             Identifier: row.Identifier,
             Meaning: row.Meaning,
@@ -241,7 +238,7 @@
           <strong>ServCode:</strong> ${data.ServCode ? data.ServCode : ""}<br>
           <strong>Service Message:</strong><br>${data.ServiceMessage ? data.ServiceMessage.replace(/\n/g,"<br>") : ""}
         `;
-      } else if (currentOption === "CR85") {
+      } else if (currentOption === "CR85" || currentOption === "CR35") {
         resultDiv.innerHTML = `
           <strong>Identifier:</strong> ${data.Identifier ? data.Identifier : ""}<br>
           <strong>Meaning:</strong> ${data.Meaning ? data.Meaning : ""}<br>
