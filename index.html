@@ -184,7 +184,7 @@
         resultDiv.innerHTML = `
           <strong>Name:</strong> ${data.Name}<br>
           <strong>Short Description:</strong> ${data.ShortDescription}<br>
-          <strong>Description:</strong><br>${data.Description?.replace(/\n/g,"<br>")}
+          <strong>Description:</strong><br>${data.Description ? data.Description.replace(/\n/g,"<br>") : ""}
         `;
       } else if (currentOption === "CR301" ) {
         resultDiv.innerHTML = `
@@ -192,8 +192,8 @@
           <strong>Priority:</strong> ${data.Priority}<br>
           <strong>Text To Display:</strong> ${data.TextToDisplay}<br>
           <strong>Confirm Required:</strong> ${data.ConfirmRequired}<br>
-          <strong>Description:</strong><br>${data.Description?.replace(/\n/g,"<br>")}<br>
-          <strong>Extended Description:</strong><br>${data.ExtendedDescription?.replace(/\n/g,"<br>")}
+          <strong>Description:</strong><br>${data.Description ? data.Description.replace(/\n/g,"<br>") : ""}<br>
+          <strong>Extended Description:</strong><br>${data.ExtendedDescription ? data.ExtendedDescription.replace(/\n/g,"<br>") : ""}
         `;
       } else if (currentOption === "CR302" ) {
         resultDiv.innerHTML = `
@@ -202,11 +202,11 @@
           <strong>Id Of Text To Display:</strong> ${data.IdOfTextToDisplay}<br>
           <strong>Text To Display:</strong> ${data.TextToDisplay}<br>
           <strong>Confirm Required:</strong> ${data.ConfirmRequired}<br>
-          <strong>Description:</strong><br>${data.Description?.replace(/\n/g,"<br>")}<br>
-          <strong>Extended Description:</strong><br>${data.ExtendedDescription?.replace(/\n/g,"<br>")}<br>
+          <strong>Description:</strong><br>${data.Description ? data.Description.replace(/\n/g,"<br>") : ""}<br>
+          <strong>Extended Description:</strong><br>${data.ExtendedDescription ? data.ExtendedDescription.replace(/\n/g,"<br>") : ""}<br>
           <strong>ServID:</strong> ${data.ServID}<br>
           <strong>ServCode:</strong> ${data.ServCode}<br>
-          <strong>Service Message:</strong><br>${data.ServiceMessage?.replace(/\n/g,"<br>")}
+          <strong>Service Message:</strong><br>${data.ServiceMessage ? data.ServiceMessage.replace(/\n/g,"<br>") : ""}
         `;
       }
     } else {
