@@ -202,6 +202,7 @@
   function searchError() {
     const code = document.getElementById("codeInput").value.trim();
     if (currentOption === "CR85") {
+      console.log("Searching for code with leading apostrophe:", "'" + code);
       const data = errorData["'" + code];
     } else {
       const data = errorData[code];
