@@ -148,7 +148,7 @@
             Description: row.Description,
             ExtendedDescription: row.ExtendedDescription
           };
-        } else if (option === "CR302" ) {
+        } else if (option === "CR302" || option === "DXG") {
           errorData[row.ErrorCode] = {
             Identifier: row.Identifier,
             Priority: row.Priority,
@@ -195,7 +195,7 @@
           <strong>Description:</strong><br>${data.Description ? data.Description.replace(/\n/g,"<br>") : ""}<br>
           <strong>Extended Description:</strong><br>${data.ExtendedDescription ? data.ExtendedDescription.replace(/\n/g,"<br>") : ""}
         `;
-      } else if (currentOption === "CR302" ) {
+      } else if (currentOption === "CR302" || currentOption === "DXG") {
         resultDiv.innerHTML = `
           <strong>Identifier:</strong> ${data.Identifier ? data.Identifier : ""}<br>
           <strong>Priority:</strong> ${data.Priority ? data.Priority : ""}<br>
