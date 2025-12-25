@@ -139,7 +139,7 @@
             ShortDescription: row.ShortDescription,
             Description: row.Description
           };
-        } else {
+        } else if (option === "CR301" ) {
           errorData[row.ErrorCode] = {
             Identifier: row.Identifier,
             Priority: row.Priority,
@@ -148,7 +148,21 @@
             Description: row.Description,
             ExtendedDescription: row.ExtendedDescription
           };
-        }
+        } else if (option === "CR302" ) {
+          errorData[row.ErrorCode] = {
+            Identifier: row.Identifier,
+            Priority: row.Priority,
+            IdOfTextToDisplay: row.IdOfTextToDisplay,
+            TextToDisplay: row.TextToDisplay,
+            ConfirmRequired: row.ConfirmRequired,
+            Description: row.Description,
+            ExtendedDescription: row.ExtendedDescription,
+            ServID: row.ServID,
+            ServCode: row.ServCode,
+            ServiceMessage: row.ServiceMessage
+          };
+        } 
+        
       });
 
       console.log("✅ Données Excel chargées pour", option, errorData);
@@ -172,7 +186,7 @@
           <strong>Short Description:</strong> ${data.ShortDescription}<br>
           <strong>Description:</strong><br>${data.Description.replace(/\n/g,"<br>")}
         `;
-      } else {
+      } else if (currentOption === "CR301" ) {
         resultDiv.innerHTML = `
           <strong>Identifier:</strong> ${data.Identifier}<br>
           <strong>Priority:</strong> ${data.Priority}<br>
@@ -180,6 +194,19 @@
           <strong>Confirm Required:</strong> ${data.ConfirmRequired}<br>
           <strong>Description:</strong><br>${data.Description.replace(/\n/g,"<br>")}<br>
           <strong>Extended Description:</strong><br>${data.ExtendedDescription.replace(/\n/g,"<br>")}
+        `;
+      } else if (currentOption === "CR302" ) {
+        resultDiv.innerHTML = `
+          <strong>Identifier:</strong> ${data.Identifier}<br>
+          <strong>Priority:</strong> ${data.Priority}<br>
+          <strong>Id Of Text To Display:</strong> ${data.IdOfTextToDisplay}<br>
+          <strong>Text To Display:</strong> ${data.TextToDisplay}<br>
+          <strong>Confirm Required:</strong> ${data.ConfirmRequired}<br>
+          <strong>Description:</strong><br>${data.Description.replace(/\n/g,"<br>")}<br>
+          <strong>Extended Description:</strong><br>${data.ExtendedDescription.replace(/\n/g,"<br>")}<br>
+          <strong>ServID:</strong> ${data.ServID}<br>
+          <strong>ServCode:</strong> ${data.ServCode}<br>
+          <strong>Service Message:</strong><br>${data.ServiceMessage.replace(/\n/g,"<br>")}
         `;
       }
     } else {
