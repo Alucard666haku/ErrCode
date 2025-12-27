@@ -191,11 +191,14 @@
             Cure: row.Cure
           };
         } else if (option === "DXS") {  
-          const parts = row.explanation.split("<newline/>");
+          let reason = "", meaning = "", cure = "";
 
-          const reason  = parts.find(p => p.startsWith("Reason"))?.replace(/^Reason:\s*/, "") || "";
-          const meaning = parts.find(p => p.startsWith("Meaning"))?.replace(/^Meaning:\s*/, "") || "";
-          const cure    = parts.find(p => p.startsWith("Cure"))?.replace(/^Cure:\s*/, "") || "";
+          if (row.explanation) {
+            const parts = row.explanation.split("<newline/>");
+            reason  = parts.find(p => p.startsWith("Reason"))?.replace(/^Reason:\s*/, "") || "";
+            meaning = parts.find(p => p.startsWith("Meaning"))?.replace(/^Meaning:\s*/, "") || "";
+            cure    = parts.find(p => p.startsWith("Cure"))?.replace(/^Cure:\s*/, "") || "";
+          }
 
           errorData[row.code] = {
             Abbreviation: row.abbreviation,
