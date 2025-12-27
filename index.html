@@ -83,6 +83,9 @@
     <label>
       <input type="radio" name="option" value="CR302" onclick="loadExcel('CR302')"> CR30_2Gen
     </label>
+    <label>
+      <input type="radio" name="option" value="DXS" onclick="loadExcel('DXS')"> DX_S DX_Si
+    </label>
   </div>
 
   <!-- Champ pour entrer le code -->
@@ -112,6 +115,9 @@
           break;
         case "CR85":
           fileName = "ErrorCodesCR75-85.csv";
+          break;
+        case "DXS":
+          fileName = "ErrorCodesDXS.csv";
           break;
         case "DXG":
           fileName = "ErrorCodesDXG-DXM.xlsx";
@@ -184,7 +190,22 @@
             Reason: row.Reason,
             Cure: row.Cure
           };
+        } else if (option === "DXS") {  
+          const parts = row.explanation.split("<newline/>");
+
+          const reason  = parts.find(p => p.startsWith("Reason"))?.replace(/^Reason:\s*/, "") || "";
+          const meaning = parts.find(p => p.startsWith("Meaning"))?.replace(/^Meaning:\s*/, "") || "";
+          const cure    = parts.find(p => p.startsWith("Cure"))?.replace(/^Cure:\s*/, "") || "";
+
+          errorData[row.code] = {
+            Abbreviation: row.abbreviation,
+            Description: row.description,
+            Reason: reason,
+            Meaning: meaning,
+            Cure: cure
+          };
         }
+
         
       });
 
@@ -245,7 +266,16 @@
           <strong>Reason:</strong><br>${data.Reason ? data.Reason.replace(/\n/g,"<br>") : ""}<br>
           <strong>Cure:</strong><br>${data.Cure ? data.Cure.replace(/\n/g,"<br>") : ""}
         `;
+      } else if (currentOption === "DXS") {
+        resultDiv.innerHTML = `
+          <strong>Abbreviation:</strong> ${data.Abbreviation || ""}<br>
+          <strong>Description:</strong> ${data.Description || ""}<br>
+          <strong>Reason:</strong><br>${data.Reason ? data.Reason.replace(/\n/g,"<br>") : ""}<br>
+          <strong>Meaning:</strong><br>${data.Meaning ? data.Meaning.replace(/\n/g,"<br>") : ""}<br>
+          <strong>Cure:</strong><br>${data.Cure ? data.Cure.replace(/\n/g,"<br>") : ""}
+        `;
       }
+
     } else {
       resultDiv.innerHTML = "❌ Aucun détail trouvé pour ce code.";
     }
